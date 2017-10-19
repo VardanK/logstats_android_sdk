@@ -1,5 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+def majorVersion = 0
+def minorVersion = 1
+def buildVersion = 2
+def libVersion = "$majorVersion.$minorVersion.$buildVersion"
 
 android {
     compileSdkVersion 26
@@ -8,8 +15,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "0.1"
+        versionCode majorVersion * 10000 + minorVersion * 100 + buildVersion
+        versionName libVersion
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -44,4 +51,74 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.2'
 
     testCompile 'junit:junit:4.12'
+}
+
+// Bintray specific code goes below
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+def siteUrl = 'https://github.com/VardanK/logstats_android_sdk'
+def gitUrl = 'https://github.com/VardanK/logstats_android_sdk.git'
+
+version = libVersion
+group = "org.yecup.essentials"
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+
+                // Description
+                name 'org.yecup.logstatssdk'
+                description ''
+                url siteUrl
+
+                licenses {
+                    license {
+                        name 'AGPL-V3'
+                        url 'https://opensource.org/licenses/agpl-v3.html'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'vardank'
+                        name 'Vardan Kurkchiyan'
+                        email 'vardan.kurkchiyan@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key  = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+
+    pkg {
+        repo = 'maven'
+        name = 'org.yecup.essentials:logstatssdk'
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["AGPL-V3"]
+        publish = true
+        version {
+            name = libVersion
+            released  = new Date()
+            desc = ''
+            vcsTag = ''
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.password") //Optional. The passphrase for GPG signing'
+            }
+        }
+    }
 }
