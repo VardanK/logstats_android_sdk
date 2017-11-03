@@ -5,7 +5,7 @@ apply plugin: 'com.jfrog.bintray'
 
 def majorVersion = 0
 def minorVersion = 1
-def buildVersion = 2
+def buildVersion = 3
 def libVersion = "$majorVersion.$minorVersion.$buildVersion"
 
 android {
@@ -70,8 +70,8 @@ install {
                 packaging 'aar'
 
                 // Description
-                name 'org.yecup.logstatssdk'
-                description ''
+                name 'org.yecup.essentials:logstatssdk'
+                description 'Android library for logstats logging platform'
                 url siteUrl
 
                 licenses {
@@ -95,6 +95,26 @@ install {
             }
         }
     }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+//task javadoc(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//}
+//
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+
+artifacts {
+//    archives javadocJar
+    archives sourcesJar
 }
 
 bintray {
