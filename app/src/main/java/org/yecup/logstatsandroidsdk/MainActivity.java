@@ -14,8 +14,8 @@ import org.yecup.logstatssdk.LogStats;
 public class MainActivity extends AppCompatActivity {
 
     LogStats logStats = new LogStats(
-            "http://138.68.234.136/",
-            "w2JckrgBBaawgfYcDryuh"
+            "server_addres",
+            "token"
     );
 
     @Override
